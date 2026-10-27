@@ -1,8 +1,9 @@
 {
   "name": "Plausible Analytics | Privacy-First Google Analytics Alternative",
-  "short_name": "Plausible CE",
+  "short_name": "Plausible Web Analytics",
   "description": "Cookie-free web analytics on ClickHouse and Postgres, admin set on boot",
   "category": "Analytics",
   "image": "https://raw.githubusercontent.com/two-workspaces/plausible/main/icon.svg",
-  "card_desc": "Plausible Analytics: lightweight, cookie-free website analytics. Runs Plausible CE 3.2.1 on ClickHouse and Postgres, with the admin account created on first boot."
+  "card_desc": "Plausible Analytics: lightweight, cookie-free website analytics. Runs Plausible CE 3.2.1 on ClickHouse and Postgres, with the admin account created on first boot.",
+  "id": "f50e0324-d2b5-4cbf-8a5d-8621f9cd109d"
 }

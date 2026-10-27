@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
-mkdir -p "$TMPDIR"
+if [ "$(id -u)" = 0 ]; then
+  mkdir -p "$TMPDIR"
+  chown -R plausible:nogroup /var/lib/plausible
+  exec su-exec plausible "$0"
+fi
 /entrypoint.sh db createdb
 /entrypoint.sh db migrate
 # Plausible hands the instance to whoever registers first; create that
