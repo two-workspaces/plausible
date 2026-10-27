@@ -1,0 +1,169 @@
+{
+ "buckets": {},
+ "services": {
+  "7c5ff2ca-cc07-4fdd-b12e-ca8aa598e45a": {
+   "icon": "https://raw.githubusercontent.com/two-workspaces/plausible/main/icon.svg",
+   "name": "Plausible",
+   "build": {
+    "dockerfilePath": "Dockerfile"
+   },
+   "deploy": {
+    "startCommand": null,
+    "healthcheckPath": "/api/health",
+    "healthcheckTimeout": 600,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+   },
+   "source": {
+    "repo": "https://github.com/two-workspaces/plausible",
+    "rootDirectory": null
+   },
+   "networking": {
+    "serviceDomains": {
+     "<hasDomain>": {}
+    }
+   },
+   "volumeMounts": {
+    "b29a63ef-ab59-4112-8728-fc4241c7f560": {
+     "mountPath": "/var/lib/plausible"
+    }
+   },
+   "variables": {
+    "ADMIN_USER_EMAIL": {
+     "defaultValue": "",
+     "description": "Email of the admin account, created on the first boot. You sign in with it.",
+     "isOptional": false
+    },
+    "ADMIN_USER_PWD": {
+     "defaultValue": "${{secret(24, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+     "description": "Admin password, generated at deploy time and used on the first boot only. Change it in Plausible afterwards (Settings, Security).",
+     "isOptional": false
+    },
+    "BASE_URL": {
+     "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}",
+     "description": "Public URL of Plausible. Change it when you add a custom domain.",
+     "isOptional": false
+    },
+    "SECRET_KEY_BASE": {
+     "defaultValue": "${{secret(64, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+     "description": "Signs sessions and derives the 2FA key. Changing it signs everyone out and breaks 2FA.",
+     "isOptional": false
+    },
+    "DATABASE_URL": {
+     "defaultValue": "postgresql://${{Postgres.POSTGRES_USER}}:${{Postgres.POSTGRES_PASSWORD}}@${{Postgres.RAILWAY_PRIVATE_DOMAIN}}:5432/${{Postgres.POSTGRES_DB}}",
+     "description": "Postgres connection (private network)",
+     "isOptional": false
+    },
+    "CLICKHOUSE_DATABASE_URL": {
+     "defaultValue": "http://plausible:${{ClickHouse.CLICKHOUSE_PASSWORD}}@${{ClickHouse.RAILWAY_PRIVATE_DOMAIN}}:8123/plausible_events_db",
+     "description": "ClickHouse connection (private network)",
+     "isOptional": false
+    },
+    "DISABLE_REGISTRATION": {
+     "defaultValue": "invite_only",
+     "description": "Who can sign up: invite_only (default), true (nobody) or false (anyone).",
+     "isOptional": false
+    },
+    "HTTP_PORT": {
+     "defaultValue": "8000",
+     "description": "HTTP port Plausible listens on - leave as is.",
+     "isOptional": false
+    },
+    "PORT": {
+     "defaultValue": "8000",
+     "description": "HTTP port Plausible listens on - leave as is.",
+     "isOptional": false
+    },
+    "TMPDIR": {
+     "defaultValue": "/var/lib/plausible/tmp",
+     "description": "Temporary files for CSV imports and exports, on the volume.",
+     "isOptional": false
+    }
+   }
+  },
+  "341274f0-741c-4bf2-8493-4a5a3fecec38": {
+   "icon": "https://devicons.railway.app/i/clickhouse.svg",
+   "name": "ClickHouse",
+   "build": {},
+   "deploy": {
+    "startCommand": null,
+    "healthcheckPath": null,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+   },
+   "source": {
+    "repo": "https://github.com/two-workspaces/plausible",
+    "rootDirectory": "/clickhouse"
+   },
+   "networking": {
+    "serviceDomains": {}
+   },
+   "volumeMounts": {
+    "adec5ad8-1f3d-4578-b7dc-7273cde4f92f": {
+     "mountPath": "/var/lib/clickhouse"
+    }
+   },
+   "variables": {
+    "CLICKHOUSE_PASSWORD": {
+     "defaultValue": "${{secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+     "description": "Auto-generated ClickHouse password",
+     "isOptional": false
+    },
+    "RAILWAY_DEPLOYMENT_DRAINING_SECONDS": {
+     "defaultValue": "60",
+     "description": "Time for ClickHouse to shut down cleanly on redeploy",
+     "isOptional": false
+    }
+   }
+  },
+  "4f5bc358-3290-4e82-9cb2-c2ddd968edc9": {
+   "icon": "https://devicons.railway.app/i/postgresql.svg",
+   "name": "Postgres",
+   "build": {},
+   "deploy": {
+    "startCommand": null,
+    "healthcheckPath": null,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+   },
+   "source": {
+    "image": "postgres:17.11-alpine"
+   },
+   "networking": {
+    "serviceDomains": {}
+   },
+   "volumeMounts": {
+    "7d65b377-c41e-4bb3-9751-c89111a9e47d": {
+     "mountPath": "/var/lib/postgresql/data"
+    }
+   },
+   "variables": {
+    "POSTGRES_DB": {
+     "defaultValue": "plausible",
+     "description": "Database name",
+     "isOptional": false
+    },
+    "POSTGRES_USER": {
+     "defaultValue": "plausible",
+     "description": "Database user",
+     "isOptional": false
+    },
+    "POSTGRES_PASSWORD": {
+     "defaultValue": "${{secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+     "description": "Auto-generated database password",
+     "isOptional": false
+    },
+    "PGDATA": {
+     "defaultValue": "/var/lib/postgresql/data/pgdata",
+     "description": "Data subdirectory - keeps Postgres happy on Railway volumes",
+     "isOptional": false
+    },
+    "RAILWAY_DEPLOYMENT_DRAINING_SECONDS": {
+     "defaultValue": "60",
+     "description": "Time for Postgres to shut down cleanly on redeploy",
+     "isOptional": false
+    }
+   }
+  }
+ }
+}
